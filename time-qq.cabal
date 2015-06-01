@@ -23,7 +23,7 @@ library
   build-depends:       base >=4.7 && <5
                      , template-haskell
                      , time >= 1.4
-                     , old-locale
+                     , time-locale-compat
 
 test-suite unit
   type:                exitcode-stdio-1.0

@@ -38,10 +38,10 @@ module Data.Time.QQ
 import Data.Time.Calendar
 import Data.Time.Clock
 import Data.Time.Format
+import Data.Time.Locale.Compat (defaultTimeLocale)
 import Language.Haskell.TH
 import Language.Haskell.TH.Quote
 import Language.Haskell.TH.Syntax
-import System.Locale
 
 -- | ISO8601 date with seconds and optional "." with more precision
 -- following to a 'UTCTime'.
@@ -51,7 +51,7 @@ import System.Locale
 -- >>> [utcIso8601ms| 2099-01-01T00:00:00.42324 |]
 -- 2099-01-01 00:00:00.42324 UTC
 utcIso8601ms :: QuasiQuoter
-utcIso8601ms = utcFormat . iso8601DateFormat $ Just "%H:%M:%S%Q"
+utcIso8601ms = utcFormat "%Y-%m-%dT%H:%M:%S%Q"
 
 -- | ISO8601 date with seconds and optional "." with more precision
 -- following to a 'UTCTime'.
@@ -61,7 +61,7 @@ utcIso8601ms = utcFormat . iso8601DateFormat $ Just "%H:%M:%S%Q"
 -- >>> [utcIso8601| 2048-12-01  |] :: UTCTime
 -- 2048-12-01 00:00:00 UTC
 utcIso8601 :: QuasiQuoter
-utcIso8601 = utcFormat $ iso8601DateFormat Nothing
+utcIso8601 = utcFormat "%Y-%m-%d"
 
 -- | Build a 'UTCTime' QuasiQuoter for a given format string, as per
 -- 'readTime'.

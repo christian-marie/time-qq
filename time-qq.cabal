@@ -1,5 +1,5 @@
 name:                time-qq
-version:             0.0.0.1
+version:             0.0.0.2
 synopsis:            Quasi-quoter for UTCTime times
 description:         Quasi-quoter for UTCTime times
 homepage:            https://github.com/christian-marie/time-qq

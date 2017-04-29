@@ -6,4 +6,7 @@ A quasi quoter for times:
 
 >>> [utcIso8601ms| 2099-01-01T00:00:00.42324 |]
 2099-01-01 00:00:00.42324 UTC
+
+>>> [timeZone| BST |] :: TimeZone
+BST
 ```

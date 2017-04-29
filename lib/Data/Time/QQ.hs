@@ -28,16 +28,22 @@ module Data.Time.QQ
     utcIso8601,
     utcIso8601ms,
 
+    -- * TimeZone QuasiQuoters
+    timeZone,
+
     -- * Re-exports
     UTCTime(..),
+    TimeZone(..),
 
     -- * Specify your own formats
     utcFormat,
+    timeZoneFormat,
 ) where
 
 import Data.Time.Calendar
 import Data.Time.Clock
 import Data.Time.Format
+import Data.Time.LocalTime
 import Data.Time.Locale.Compat (defaultTimeLocale)
 import Language.Haskell.TH
 import Language.Haskell.TH.Quote
@@ -63,11 +69,28 @@ utcIso8601ms = utcFormat "%Y-%m-%dT%H:%M:%S%Q"
 utcIso8601 :: QuasiQuoter
 utcIso8601 = utcFormat "%Y-%m-%d"
 
+-- | Timezones from a reference string, to a 'TimeZone'.
+--
+-- >>> [timeZone| BST |] :: TimeZone
+-- BST
+timeZone :: QuasiQuoter
+timeZone = timeZoneFormat "%Z"
+
 -- | Build a 'UTCTime' QuasiQuoter for a given format string, as per
 -- 'readTime'.
 utcFormat :: String -> QuasiQuoter
-utcFormat format = QuasiQuoter
-    { quoteExp   = utcExp format
+utcFormat = timeFormat utcExp
+
+-- | Build a 'TimeZone' QuasiQuoter for a given format string, as per
+-- 'readTime'.
+timeZoneFormat :: String -> QuasiQuoter
+timeZoneFormat = timeFormat timeZoneExp
+
+-- | Build a QuasiQuoter for a given format string given the format interpreter,
+-- as per 'readTime'.
+timeFormat :: (String -> String -> ExpQ) -> String -> QuasiQuoter
+timeFormat formatter format = QuasiQuoter
+    { quoteExp   = formatter format
     , quotePat   = const $ error "No quotePat defined for any Data.Time.QQ QQ"
     , quoteType  = const $ error "No quoteType defined for any Data.Time.QQ QQ"
     , quoteDec   = const $ error "No quoteDec defined for any Data.Time.QQ QQ"
@@ -79,6 +102,11 @@ utcExp format input =
     let x = readTime defaultTimeLocale format input :: UTCTime
     in x `seq` [| x |]
 
+-- | Parse a time as per the format and produce a 'TimeZone 'ExpQ'.
+timeZoneExp :: String -> String -> ExpQ
+timeZoneExp format input =
+    let x = readTime defaultTimeLocale format input :: TimeZone
+    in x `seq` [| x |]
 
 -- * Instances for lifting times
 
@@ -94,4 +122,11 @@ instance Lift DiffTime where
 instance Lift Day where
     lift x = [| toEnum $(lift $ fromEnum x) |]
 
+-- * Instance for lifting timezones
 
+instance Lift TimeZone where
+    lift (TimeZone minutes summer name) = do
+        minutes' <- lift minutes
+        summer' <- lift summer
+        name' <- lift name
+        return $ ConE (mkName "TimeZone") `AppE` minutes' `AppE` summer' `AppE` name'

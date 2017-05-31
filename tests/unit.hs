@@ -18,7 +18,7 @@ main :: IO ()
 main = hspec suite
 
 suite :: Spec
-suite =
+suite = do
     describe "UTC QQs" $ do
         it "has correct output #1" $
             show [utcIso8601| 2048-12-01  |]
@@ -29,3 +29,7 @@ suite =
         it "has correct output #3" $
             show [utcIso8601ms| 2099-01-01T00:00:00 |]
                 `shouldBe` "2099-01-01 00:00:00 UTC"
+    describe "TimeZone QQs" $ do
+        it "Shows British Summer Time" $
+            show [timeZone| BST |]
+                `shouldBe` "BST"

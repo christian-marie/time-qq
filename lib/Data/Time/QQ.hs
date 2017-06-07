@@ -99,13 +99,13 @@ timeFormat formatter format = QuasiQuoter
 -- | Parse a time as per the format and produce a 'UTCTime' 'ExpQ'.
 utcExp :: String -> String -> ExpQ
 utcExp format input =
-    let x = readTime defaultTimeLocale format input :: UTCTime
+    let x = parseTimeOrError True defaultTimeLocale format input :: UTCTime
     in x `seq` [| x |]
 
 -- | Parse a time as per the format and produce a 'TimeZone 'ExpQ'.
 timeZoneExp :: String -> String -> ExpQ
 timeZoneExp format input =
-    let x = readTime defaultTimeLocale format input :: TimeZone
+    let x = parseTimeOrError True defaultTimeLocale format input :: TimeZone
     in x `seq` [| x |]
 
 -- * Instances for lifting times

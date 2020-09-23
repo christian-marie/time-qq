@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/christian-marie/time-qq.svg?branch=master)](https://travis-ci.com/christian-marie/time-qq)
+
 A quasi quoter for times:
 
 ```haskell

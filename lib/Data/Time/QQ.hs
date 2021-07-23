@@ -7,6 +7,7 @@
 -- the 3-clause BSD licence.
 --
 
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fno-warn-orphans  #-}
 
@@ -45,6 +46,8 @@ import Data.Time.Clock
 import Data.Time.Format
 import Data.Time.LocalTime
 import Data.Time.Locale.Compat (defaultTimeLocale)
+import qualified Language.Haskell.TH.Lib as TH
+import qualified Language.Haskell.TH.Syntax as TH
 import Language.Haskell.TH
 import Language.Haskell.TH.Quote
 import Language.Haskell.TH.Syntax
@@ -115,12 +118,28 @@ instance Lift UTCTime where
         day' <- lift day
         diff' <- lift diff
         return $ ConE (mkName "UTCTime") `AppE` day' `AppE` diff'
+#if MIN_VERSION_template_haskell(2,17,0)
+    liftTyped = TH.unsafeCodeCoerce . TH.lift
+#elif MIN_VERSION_template_haskell(2,16,0)
+    liftTyped = TH.unsafeTExpCoerce . TH.lift
+#endif
 
 instance Lift DiffTime where
     lift x = [| toEnum $(lift $ fromEnum x) |]
+#if MIN_VERSION_template_haskell(2,17,0)
+    liftTyped = TH.unsafeCodeCoerce . TH.lift
+#elif MIN_VERSION_template_haskell(2,16,0)
+    liftTyped = TH.unsafeTExpCoerce . TH.lift
+#endif
+
 
 instance Lift Day where
     lift x = [| toEnum $(lift $ fromEnum x) |]
+#if MIN_VERSION_template_haskell(2,17,0)
+    liftTyped = TH.unsafeCodeCoerce . TH.lift
+#elif MIN_VERSION_template_haskell(2,16,0)
+    liftTyped = TH.unsafeTExpCoerce . TH.lift
+#endif
 
 -- * Instance for lifting timezones
 
@@ -130,3 +149,8 @@ instance Lift TimeZone where
         summer' <- lift summer
         name' <- lift name
         return $ ConE (mkName "TimeZone") `AppE` minutes' `AppE` summer' `AppE` name'
+#if MIN_VERSION_template_haskell(2,17,0)
+    liftTyped = TH.unsafeCodeCoerce . TH.lift
+#elif MIN_VERSION_template_haskell(2,16,0)
+    liftTyped = TH.unsafeTExpCoerce . TH.lift
+#endif

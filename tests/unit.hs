@@ -31,5 +31,5 @@ suite = do
                 `shouldBe` "2099-01-01 00:00:00 UTC"
     describe "TimeZone QQs" $ do
         it "Shows British Summer Time" $
-            show [timeZone| BST |]
-                `shouldBe` "BST"
+            show [timeZone| EDT |]
+                `shouldBe` "EDT"

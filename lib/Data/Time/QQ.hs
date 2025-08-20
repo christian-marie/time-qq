@@ -111,6 +111,7 @@ timeZoneExp format input =
     let x = parseTimeOrError True defaultTimeLocale format input :: TimeZone
     in x `seq` [| x |]
 
+#if !MIN_VERSION_time(1,14,0)
 -- * Instances for lifting times
 
 instance Lift UTCTime where
@@ -140,7 +141,9 @@ instance Lift Day where
 #elif MIN_VERSION_template_haskell(2,16,0)
     liftTyped = TH.unsafeTExpCoerce . TH.lift
 #endif
+#endif
 
+#if !MIN_VERSION_time(1,15,0)
 -- * Instance for lifting timezones
 
 instance Lift TimeZone where
@@ -153,4 +156,5 @@ instance Lift TimeZone where
     liftTyped = TH.unsafeCodeCoerce . TH.lift
 #elif MIN_VERSION_template_haskell(2,16,0)
     liftTyped = TH.unsafeTExpCoerce . TH.lift
+#endif
 #endif

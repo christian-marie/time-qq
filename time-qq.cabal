@@ -10,7 +10,7 @@ maintainer:          Christian Marie <christian@ponies.io>
 copyright:           Christian Marie <christian@ponies.io>
 category:            Time, QuasiQuotes
 build-type:          Simple
-cabal-version:       >= 1.18
+cabal-version:       1.18
 
 source-repository HEAD
   type: git
@@ -22,7 +22,7 @@ library
   exposed-modules:     Data.Time.QQ
   build-depends:       base >=4.7 && <5
                      , template-haskell
-                     , time >= 1.4
+                     , time >= 1.4 && <1.16
                      , time-locale-compat
 
 test-suite unit

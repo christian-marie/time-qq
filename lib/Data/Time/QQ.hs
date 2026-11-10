@@ -45,12 +45,16 @@ import Data.Time.Calendar
 import Data.Time.Clock
 import Data.Time.Format
 import Data.Time.LocalTime
-import Data.Time.Locale.Compat (defaultTimeLocale)
 import qualified Language.Haskell.TH.Lib as TH
 import qualified Language.Haskell.TH.Syntax as TH
 import Language.Haskell.TH
 import Language.Haskell.TH.Quote
 import Language.Haskell.TH.Syntax
+
+#if MIN_VERSION_time(1,5,0)
+#else
+import Data.Time.Locale.Compat (defaultTimeLocale)
+#endif
 
 -- | ISO8601 date with seconds and optional "." with more precision
 -- following to a 'UTCTime'.
